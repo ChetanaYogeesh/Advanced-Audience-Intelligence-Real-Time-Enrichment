@@ -1,0 +1,119 @@
+---
+analyze_seed_audience_data:
+  description: "Fetch and analyze the provided seed audience CSV file from the web
+    URL at {csv_file_path}. Use the web scraping tool to access the CSV data from
+    the provided URL, then examine the data structure, identify available attributes
+    (age, location, purchase history, channel preferences, etc.), calculate statistical
+    distributions, spot patterns in customer behavior, and identify any data gaps
+    or quality issues. Provide detailed insights on demographic composition, behavioral
+    signals, and data completeness.\n\nOutput a structured JSON summary including:
+    age distribution \nbuckets (18-24, 25-34, 35-44, 45-55+), top 3 purchase \ncategories
+    by frequency, channel breakdown as percentages, \naverage order value by segment,
+    loyalty tier distribution, \nand a list of data gaps.\n\nCRITICAL: Explicitly
+    check for audience sub-clusters by \ncross-referencing purchase_category, preferred_channel,
+    age, \nand loyalty_tier together. If more than one distinct behavioral \nsegment
+    exists, name and describe each separately with its own \nprofile. Do NOT collapse
+    multiple segments into a single \naudience profile. Label each cluster (e.g. Segment
+    A, \nSegment B) before passing to the next agent."
+  expected_output: 'A comprehensive data profile report including: 1) Data structure
+    summary with available attributes, 2) Statistical distributions for key demographic
+    and behavioral variables, 3) Identified patterns and correlations, 4) Data quality
+    assessment highlighting gaps and issues, 5) Insights on audience composition and
+    characteristics'
+  agent: data_profiler
+enhanced_data_enrichment:
+  description: "Using the data profile analysis from the Data Profiler, enhance the
+    seed audience understanding through statistical analysis and intelligent gap-filling.
+    Apply advanced analytics to:\n\n1. **Demographic Pattern Analysis**: Identify
+    age, gender, location patterns and statistical distributions\n2. **Behavioral
+    Insight Generation**: Analyze purchase patterns, channel preferences, and loyalty
+    indicators  \n3. **Statistical Gap Filling**: Use correlation analysis to intelligently
+    estimate missing demographic data\n4. **Segment Validation**: Cross-reference
+    customer attributes to validate distinct behavioral clusters\n5. **Confidence
+    Scoring**: Assign confidence levels to estimated vs. observed data points\n\nFor
+    EACH customer segment identified by the Data Profiler:\n- Calculate statistical
+    profiles and confidence intervals\n- Generate realistic attribute estimates based
+    on observed correlations\n- Validate segment coherence using multiple data points\n-
+    Flag estimated vs. observed attributes with confidence scores\n- Create enriched
+    segment profiles with behavioral fingerprints\n\nOUTPUT REQUIREMENTS:\n- Enhanced
+    segment profiles with statistical confidence scores\n- Sample enrichment table
+    showing original vs. statistically estimated attributes  \n- Data quality assessment
+    with confidence levels by attribute type\n- Validation of segment distinctiveness
+    using multiple behavioral indicators\n- Clear flagging of [ESTIMATED] vs [OBSERVED]
+    data points\n\nFocus on statistical rigor rather than external API enrichment."
+  expected_output: 'A comprehensive enriched dataset including: 1) Enhanced customer
+    records with original and enriched attributes, 2) Professional company and job
+    information, 3) Verified social profiles and contact details, 4) Data quality
+    assessment with confidence scores, 5) API integration performance metrics, 6)
+    Remaining data gaps and recommendations for further enhancement'
+  agent: statistical_enrichment_analyst
+  context:
+  - analyze_seed_audience_data
+create_lookalike_audience_persona:
+  description: "Using the enriched dataset, apply clustering algorithms and similarity
+    scoring to identify the ideal target audience profile. Create a detailed lookalike
+    audience persona that represents the most valuable customer segment. Define key
+    characteristics, behavioral patterns, and distinguishing features that can be
+    used for audience expansion and targeting.\n\nBuild a SEPARATE named persona card
+    for each segment \nidentified. Do not merge segments into one persona.\n\nFor
+    each persona card include:\n- Persona name (creative but descriptive)\n- Age range
+    and income tier\n- Behavioral fingerprint (top 3 purchase drivers)\n- Channel
+    and content preferences\n- Top 3 motivations for purchase\n- Similarity score
+    threshold: define 4 matching attributes \n  and minimum score (7+) for lookalike
+    qualification\n- Estimated segment size as % of total seed audience"
+  expected_output: 'A structured lookalike audience persona card including: 1) Primary
+    demographic profile (age range, income tier, location patterns), 2) Behavioral
+    characteristics and purchase patterns, 3) Channel preferences and content affinity,
+    4) Key differentiating factors and similarity scores, 5) Persona narrative and
+    marketing implications'
+  agent: lookalike_modeler
+  context:
+  - enhanced_data_enrichment
+develop_targeting_strategy:
+  description: "Translate the lookalike persona into actionable marketing recommendations.
+    Determine optimal advertising channels, develop bid strategy signals, identify
+    audience exclusions, estimate potential reach, and provide tactical guidance for
+    campaign execution. Consider budget allocation, expected performance metrics,
+    and channel-specific best practices.\n\nFor EACH persona from the Lookalike Modeler,
+    produce a \nseparate channel activation plan:\n- Primary, secondary, tertiary
+    channel with rationale tied \n  to observed data patterns (not assumptions)\n-
+    Bid strategy signal per channel: awareness / consideration \n  / conversion with
+    explicit reasoning\n- Recommended ad format per channel\n- Audience exclusion
+    criteria specific to this segment\n- Estimated reach tier: niche/mid/broad with
+    justification\n\nDo NOT generate ROI targets unless derivable from input data.
+    \nFlag any estimated metrics as [ESTIMATED]."
+  expected_output: 'A comprehensive targeting strategy document including: 1) Recommended
+    advertising channels with rationale, 2) Bid strategy signals and budget allocation
+    guidance, 3) Audience exclusion criteria and negative targeting, 4) Estimated
+    reach and expected performance metrics, 5) Tactical implementation roadmap and
+    success metrics'
+  agent: targeting_strategist
+  context:
+  - create_lookalike_audience_persona
+generate_executive_summary_report:
+  description: "Package all analysis outputs into a polished, client-ready executive
+    summary report. Synthesize key findings from data profiling, enrichment, persona
+    development, and targeting strategy into a cohesive narrative. Create visual summaries,
+    highlight actionable insights, and provide clear next steps for the marketing
+    team.\n\nPackage all outputs into a CMO-ready executive summary with \nthese exact
+    sections:\n\n1. Audience Snapshot — overall seed audience stats\n2. Segment Discovery
+    — number of segments found and what \n   defines each one\n3. Enrichment Findings
+    — include the sample enrichment table \n   from Agent 2 showing original vs. synthetic
+    attributes\n4. Persona Cards — one card per segment, do not merge\n5. Targeting
+    Recommendations — one channel plan per segment\n6. Confidence Flags — list all
+    [ESTIMATED] outputs and \n   explain the limitation\n7. Next Steps — 8-week implementation
+    roadmap\n\nBe precise and data-backed. Flag assumptions clearly. \nKeep total
+    length under 800 words excluding tables.\n\nThe seed audience input contains exactly
+    30 customer records. \nReport the seed audience size as 30. Do not confuse seed
+    \naudience size with estimated lookalike reach."
+  expected_output: 'A complete executive summary report in markdown format including:
+    1) Executive summary with key findings and recommendations, 2) Audience insights
+    and data quality assessment, 3) Enriched audience profile and synthetic attributes,
+    4) Lookalike persona card with visual representation, 5) Targeting strategy and
+    implementation roadmap, 6) Appendix with detailed methodology and data sources'
+  agent: report_generator
+  context:
+  - analyze_seed_audience_data
+  - enhanced_data_enrichment
+  - create_lookalike_audience_persona
+  - develop_targeting_strategy
